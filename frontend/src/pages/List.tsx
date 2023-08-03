@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react';
-import axios from 'axios'
+import axios from 'axios';
+import saveAs from 'file-saver';
 
 const List = ():JSX.Element => {
     const [movies,setMovies] = useState<any[]>([]);
@@ -22,6 +23,20 @@ const List = ():JSX.Element => {
     useEffect(()=>{
         console.log(movies);
     },[movies])
+
+    const handleDownload = (movieId: string, title: string) => {
+        axios
+          .get(`http://localhost:6700/download/${movieId}`, { responseType: 'blob' })
+          .then((response) => {
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            saveAs(blob, `${title}.pdf`);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      };
+      
+
     return (
         <div className="movies">
             <h3>List all docs</h3>
@@ -32,6 +47,7 @@ const List = ():JSX.Element => {
                             <div key={movie._id} className="movie"> 
                                 <p>{movie.title}</p>
                                 <img src={`http://localhost:6700/${movie.image}`} alt={movie.title} />
+                                <button onClick={() => handleDownload(movie._id, movie.title)}>Download Document</button>
                             </div>
                         )
                     })

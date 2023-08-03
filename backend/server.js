@@ -61,5 +61,24 @@ app.post('/upload', upload.fields([{ name: 'image',maxCount: 1},{ name: 'documen
     } catch (error) {
         res.status(400).json({error: error.message})
     }
-  })
+  });
+
+
+  // New route to download a movie's document based on its ID
+  app.get('/download/:id', async (req, res) => {
+    try {
+      const movieId = req.params.id;
+      const movie = await Movie.findById(movieId);
+
+      if (!movie || !movie.document) {
+        return res.status(404).json({ error: 'Movie document not found' });
+      }
+
+      const documentPath = movie.document;
+      res.sendFile(path.resolve(documentPath));
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 
