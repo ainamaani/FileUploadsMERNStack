@@ -27,10 +27,11 @@ mongoose.connect('mongodb+srv://ecommerce:com12345@trial.nacabxh.mongodb.net/Eco
 
 
 // Image upload route
-app.post('/upload', upload.single('image'), async (req, res) => {
+app.post('/upload', upload.fields([{ name: 'image',maxCount: 1},{ name: 'document',maxCount: 1 }]), async (req, res) => {
     try {
       // Get the uploaded file path from the request object
-      const imagePath = req.file.path;
+      const imagePath = req.files['image'][0].path;
+      const documentPath = req.files['document'][0].path;
   
       // Get other data (movie title) from the request body
       const { title } = req.body;
@@ -39,13 +40,14 @@ app.post('/upload', upload.single('image'), async (req, res) => {
       const newMovie = new Movie({
         title: title,
         image: imagePath,
+        document: documentPath
       });
   
       // Save the movie object to the database
       await newMovie.save();
       res.status(200).json({ message: 'Movie uploaded successfully!' });
     } catch (error) {
-      res.status(500).json({ error: 'Something went wrong' });
+      res.status(500).json({ error: error.message });
     }
   });
 

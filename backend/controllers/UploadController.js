@@ -12,7 +12,18 @@ const storage = multer.diskStorage({
   },
 });
 
+// Multer file filter to accept only images, PDFs, Word documents, and Excel files
+const fileFilter = (req, file, cb) => {
+  const allowedFileTypes = ['.png', '.jpg', '.jpeg', '.gif', '.pdf', '.doc', '.docx', '.xls', '.xlsx'];
+  const extname = path.extname(file.originalname).toLowerCase();
+  if (allowedFileTypes.includes(extname)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only images, PDFs, Word documents, and Excel files are allowed.'));
+  }
+};
+
 // Multer upload instance
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage , fileFilter: fileFilter });
 
 module.exports = upload;

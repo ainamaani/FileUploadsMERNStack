@@ -5,11 +5,18 @@ import axios from 'axios';
 const UploadImage = ():JSX.Element => {
     const [movie,setMovie] = useState('');
     const [cover,setCover] = useState<File | null>(null);
+    const [document,setDocument] = useState<File | null>(null);
 
     const handleFileChange = (e : React.ChangeEvent<HTMLInputElement>) =>{
         if (e.target.files && e.target.files.length > 0) {
             setCover(e.target.files[0]);
           }
+    }
+
+    const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+        if (e.target.files && e.target.files.length > 0){
+            setDocument(e.target.files[0])
+        }
     }
 
     const handleSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
@@ -18,6 +25,9 @@ const UploadImage = ():JSX.Element => {
         formData.append('title',movie);
         if(cover !== null){
             formData.append('image',cover);
+        }
+        if(document !== null){
+            formData.append('document',document)
         }
         try {
             const response = await axios.post('http://localhost:6700/upload',formData,{
@@ -30,6 +40,7 @@ const UploadImage = ():JSX.Element => {
                 console.log(response.data);
                 setMovie('');
                 setCover(null);
+                setDocument(null);
             }
         } catch (error) {
             console.log(error)
@@ -43,7 +54,9 @@ const UploadImage = ():JSX.Element => {
                 <label htmlFor="movie">Movie</label>
                 <input type="text" onChange={(e)=>{setMovie(e.target.value)}} />
                 <label htmlFor="image">Movie cover</label>
-                <input type="file" onChange={handleFileChange} />
+                <input type="file" onChange={handleFileChange} accept='.png,.jpeg,.jpg' />
+                <label htmlFor="document">Movie documentation</label>
+                <input type="file" onChange={handleDocumentChange} accept='.pdf' />
                 <button>Add movie</button>
             </form>
         </div>

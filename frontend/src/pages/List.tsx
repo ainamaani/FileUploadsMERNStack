@@ -29,11 +29,9 @@ const List = ():JSX.Element => {
                 movies.length > 0 ? (
                     movies.map(movie =>{
                         return(
-                            <div key={movie._id} className="movie">
-                                
+                            <div key={movie._id} className="movie"> 
                                 <p>{movie.title}</p>
                                 <img src={`http://localhost:6700/${movie.image}`} alt={movie.title} />
-
                             </div>
                         )
                     })

@@ -8,6 +8,10 @@ const movieSchema = new mongoose.Schema({
     image:{
         type:String,
         required:true
+    },
+    document:{
+        type:String,
+        required:true
     }
 },{timestamps:true});
 module.exports = mongoose.model('Movie',movieSchema);
